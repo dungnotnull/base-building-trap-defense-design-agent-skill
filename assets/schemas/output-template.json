@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://972026.skill-library/base-building-trap-defense-design/output-template.json",
+  "title": "Output Template Schema",
+  "description": "Schema for the standard output report format",
+  "type": "object",
+  "required": ["title", "date", "analyst", "language", "domain", "game", "game_mode", "sections"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Report title"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Report date (YYYY-MM-DD)"
+    },
+    "analyst": {
+      "type": "string",
+      "description": "Analyst/skill name and version"
+    },
+    "language": {
+      "type": "string",
+      "enum": ["Vietnamese", "English"],
+      "description": "Report language"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain name"
+    },
+    "game": {
+      "type": "string",
+      "description": "Canonical game name"
+    },
+    "game_mode": {
+      "type": "string",
+      "enum": ["PvP", "PvE", "Hybrid"],
+      "description": "Game mode"
+    },
+    "degradation_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "Data availability degradation level"
+    },
+    "sections": {
+      "type": "object",
+      "required": ["executive_summary", "inputs_scope", "evidence_collected", "analysis_scorecard", "action_plan", "academic_evidence", "disclosure", "verdict"],
+      "properties": {
+        "executive_summary": {
+          "type": "string",
+          "description": "2-3 sentence summary with verdict and headline action"
+        },
+        "inputs_scope": {
+          "type": "object",
+          "description": "Input parameters and scope",
+          "properties": {
+            "object": {"type": "string"},
+            "game": {"type": "string"},
+            "game_mode": {"type": "string"},
+            "threats": {"type": "array", "items": {"type": "string"}},
+            "resources": {"type": "object"},
+            "constraints": {"type": "array", "items": {"type": "string"}},
+            "timeframe": {"type": "string"},
+            "available_inputs": {"type": "array", "items": {"type": "string"}},
+            "audience": {"type": "string"}
+          }
+        },
+        "evidence_collected": {
+          "type": "object",
+          "description": "Collected evidence with source attributions",
+          "properties": {
+            "current_data": {"type": "array", "items": {"type": "object"}},
+            "authoritative_docs": {"type": "array", "items": {"type": "object"}},
+            "recent_news": {"type": "array", "items": {"type": "object"}},
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string"},
+                  "label": {"type": "string"},
+                  "tier": {"type": "integer"},
+                  "accessed": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "analysis_scorecard": {
+          "type": "object",
+          "description": "Core analysis results",
+          "properties": {
+            "layers": {"type": "array"},
+            "chokepoints": {"type": "array"},
+            "trap_logic": {"type": "array"},
+            "cost_coverage": {"type": "object"},
+            "counter_play": {"type": "object"},
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "ttk": {"type": "number"},
+                "ehp": {"type": "number"},
+                "dpe": {"type": "number"},
+                "coverage": {"type": "number"},
+                "raid_cost": {"type": "number"}
+              }
+            },
+            "scenarios": {
+              "type": "object",
+              "properties": {
+                "best": {"type": "object"},
+                "base": {"type": "object"},
+                "worst": {"type": "object"}
+              }
+            }
+          }
+        },
+        "action_plan": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "priority": {"type": "string", "enum": ["high", "medium", "low"]},
+              "action": {"type": "string"},
+              "structure_counts": {"type": "object"},
+              "material_cost": {"type": "object"},
+              "placement_notes": {"type": "string"},
+              "safety_limits": {"type": "array", "items": {"type": "string"}}
+            }
+          },
+          "description": "Concrete build-order actions"
+        },
+        "academic_evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "citation": {"type": "string"},
+              "tier": {"type": "integer"},
+              "relevance": {"type": "string"}
+            }
+          },
+          "description": "3-5 academic evidence entries"
+        },
+        "disclosure": {
+          "type": "string",
+          "description": "Mandatory disclosure/limitations notice (MUST appear before verdict)"
+        },
+        "verdict": {
+          "type": "object",
+          "description": "Final verdict and conclusion",
+          "properties": {
+            "category": {
+              "type": "string",
+              "enum": ["Strong Defense", "Conditional", "Easily Raidable", "Inconclusive"]
+            },
+            "scenarios": {"type": "object"},
+            "key_risks": {"type": "array", "items": {"type": "string"}},
+            "evidence_chain": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "claim": {"type": "string"},
+                  "source_id": {"type": "string"}
+                }
+              }
+            },
+            "remediation": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "post_execution_checklist": {
+          "type": "object",
+          "description": "Quality gate checklist",
+          "properties": {
+            "universal_gates": {
+              "type": "object",
+              "properties": {
+                "U1": {"type": "boolean"},
+                "U2": {"type": "boolean"},
+                "U3": {"type": "boolean"},
+                "U4": {"type": "boolean"},
+                "U5": {"type": "boolean"},
+                "U6": {"type": "boolean"}
+              }
+            },
+            "domain_gates": {
+              "type": "object",
+              "properties": {
+                "G1": {"type": "boolean"},
+                "G2": {"type": "boolean"},
+                "G3": {"type": "boolean"},
+                "G4": {"type": "boolean"}
+              }
+            },
+            "limitations": {"type": "array", "items": {"type": "string"}},
+            "degradation_level": {"type": "integer"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,386 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://972026.skill-library/base-building-trap-defense-design/context-envelope-v1.json",
+  "title": "Context Envelope v1.0",
+  "description": "Context envelope for inter-step communication in the base-building-trap-defense-design harness",
+  "type": "object",
+  "required": ["schema_version", "session_id", "lang", "degradation_level", "steps", "gate_results"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": ["1.0"],
+      "description": "Envelope schema version"
+    },
+    "session_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique session identifier"
+    },
+    "lang": {
+      "type": "string",
+      "enum": ["vi", "en"],
+      "description": "Output language (Vietnamese or English)"
+    },
+    "degradation_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "Data availability degradation level (0=all sources, 4=all sources failed)"
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(limitation|warning|error): .+"
+      },
+      "description": "System flags for limitations, warnings, and errors"
+    },
+    "steps": {
+      "type": "object",
+      "description": "Step-by-step analysis results",
+      "properties": {
+        "requirements": {
+          "type": "object",
+          "description": "Step 1: Gathered and normalized requirements",
+          "properties": {
+            "object": {"type": "string", "description": "Object of analysis (base layout, trap system, etc.)"},
+            "scope": {"type": "string", "description": "Analysis scope"},
+            "timeframe": {"type": "string", "description": "Timeframe for analysis"},
+            "available_inputs": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Available input materials (screenshots, descriptions, etc.)"
+            },
+            "target_audience": {"type": "string", "description": "Target audience for output"},
+            "language": {"type": "string", "enum": ["vi", "en"], "description": "Output language"},
+            "analysis_type": {"type": "string", "description": "Type of analysis"},
+            "game": {
+              "type": "string",
+              "enum": ["Rust", "7 Days to Die", "Fortnite: Save the World", "ARK: Survival Evolved", "The Forest", "Valheim", "Conan Exiles", "Palworld", "Other"],
+              "description": "Canonical game name"
+            },
+            "game_mode": {
+              "type": "string",
+              "enum": ["pvp", "pve", "hybrid"],
+              "description": "Game mode (PvP, PvE, or hybrid)"
+            },
+            "threat_types": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Types of threats to defend against"
+            },
+            "resources_budget": {
+              "type": ["object", "null"],
+              "description": "Resource constraints (materials, cost, time)"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["pending", "complete", "blocked"],
+              "description": "Step completion status"
+            }
+          }
+        },
+        "evidence": {
+          "type": "object",
+          "description": "Step 2: Collected evidence and data",
+          "properties": {
+            "current_data": {
+              "type": "array",
+              "items": {"type": "object"},
+              "description": "Current trap/structure stats and game data"
+            },
+            "authoritative_docs": {
+              "type": "array",
+              "items": {"type": "object"},
+              "description": "Authoritative game documentation and wikis"
+            },
+            "recent_news": {
+              "type": "array",
+              "items": {"type": "object"},
+              "description": "Recent patch notes and balance changes"
+            },
+            "reference_benchmarks": {
+              "type": "array",
+              "items": {"type": "object"},
+              "description": "Reference benchmarks and meta data"
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "label", "tier"],
+                "properties": {
+                  "id": {"type": "string", "pattern": "^S\\d+$", "description": "Source ID (S1, S2, etc.)"},
+                  "label": {"type": "string", "description": "Source label/title"},
+                  "url": {"type": "string", "format": "uri", "description": "Source URL"},
+                  "date": {"type": "string", "format": "date", "description": "Source date"},
+                  "tier": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4,
+                    "description": "Evidence tier (1=highest, 4=lowest)"
+                  },
+                  "accessed": {"type": "string", "format": "date-time", "description": "Access timestamp"}
+                }
+              },
+              "description": "Source registry with stable IDs"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["pending", "complete", "degraded"],
+              "description": "Step completion status (degraded if some sources failed)"
+            }
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "description": "Step 3: Core defense and trap analysis",
+          "properties": {
+            "layers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "level": {"type": "integer", "minimum": 0, "maximum": 5},
+                  "name": {"type": "string"},
+                  "purpose": {"type": "string"},
+                  "structures": {"type": "array"},
+                  "traps": {"type": "array"}
+                }
+              },
+              "description": "Defense layers (L0-L5)"
+            },
+            "chokepoints": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "location": {"type": "string"},
+                  "type": {"type": "string"},
+                  "funnel_efficiency": {"type": "number"},
+                  "trap_coverage": {"type": "number"}
+                }
+              },
+              "description": "Chokepoint locations and metrics"
+            },
+            "trap_logic": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "trigger_type": {"type": "string"},
+                  "trigger_timing": {"type": "string"},
+                  "chain_sequence": {"type": "array"},
+                  "synergy_multiplier": {"type": "number"}
+                }
+              },
+              "description": "Trap trigger logic and synergy chains"
+            },
+            "cost_coverage": {
+              "type": "object",
+              "properties": {
+                "total_cost": {"type": "number"},
+                "coverage_percentage": {"type": "number"},
+                "cost_per_coverage": {"type": "number"},
+                "efficiency_frontier": {"type": "boolean"}
+              }
+            },
+            "counter_play": {
+              "type": "object",
+              "properties": {
+                "raid_tools": {"type": "array"},
+                "weak_spots": {"type": "array"},
+                "net_balance": {"type": "number"},
+                "mitigation_strategies": {"type": "array"}
+              }
+            },
+            "scenarios": {
+              "type": "object",
+              "properties": {
+                "best": {
+                  "type": "object",
+                  "properties": {
+                    "description": {"type": "string"},
+                    "ttk": {"type": "number"},
+                    "success_probability": {"type": "number"}
+                  }
+                },
+                "base": {
+                  "type": "object",
+                  "properties": {
+                    "description": {"type": "string"},
+                    "ttk": {"type": "number"},
+                    "success_probability": {"type": "number"}
+                  }
+                },
+                "worst": {
+                  "type": "object",
+                  "properties": {
+                    "description": {"type": "string"},
+                    "ttk": {"type": "number"},
+                    "success_probability": {"type": "number"}
+                  }
+                }
+              }
+            },
+            "metrics": {
+              "type": "object",
+              "properties": {
+                "ttk": {"type": "number", "description": "Time to kill (seconds)"},
+                "ehp": {"type": "number", "description": "Effective health points"},
+                "dpe": {"type": "number", "description": "Damage per expenditure"},
+                "coverage": {"type": "number", "description": "Coverage percentage (0-100)"},
+                "raid_cost": {"type": "number", "description": "Estimated raid cost"}
+              }
+            },
+            "status": {
+              "type": "string",
+              "enum": ["pending", "complete"],
+              "description": "Step completion status"
+            }
+          }
+        },
+        "knowledge": {
+          "type": "object",
+          "description": "Step 4: Academic and research evidence",
+          "properties": {
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string"},
+                  "title": {"type": "string"},
+                  "authors": {"type": "array"},
+                  "year": {"type": "integer"},
+                  "tier": {"type": "integer", "minimum": 1, "maximum": 4},
+                  "relevance": {"type": "string"}
+                }
+              }
+            },
+            "gaps": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Knowledge gaps identified for crawl pipeline"
+            },
+            "coverage_rating": {
+              "type": "string",
+              "enum": ["Strong", "Moderate", "Weak"],
+              "description": "Knowledge coverage assessment"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["pending", "complete"],
+              "description": "Step completion status"
+            }
+          }
+        },
+        "advice": {
+          "type": "object",
+          "description": "Step 5: Final advice and recommendation",
+          "properties": {
+            "verdict": {
+              "type": "string",
+              "enum": ["Strong Defense", "Conditional", "Easily Raidable", "Inconclusive"],
+              "description": "Final verdict category"
+            },
+            "scenarios": {
+              "type": "object",
+              "description": "Best/base/worst scenario summaries"
+            },
+            "key_risks": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Key identified risks"
+            },
+            "evidence_chain": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "claim": {"type": "string"},
+                  "source_id": {"type": "string"}
+                }
+              },
+              "description": "Claim-to-source mapping for traceability"
+            },
+            "remediation": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Recommended remediation actions"
+            },
+            "disclosure": {
+              "type": "string",
+              "description": "Disclosure and limitations notice (must appear before verdict)"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["pending", "complete"],
+              "description": "Step completion status"
+            }
+          }
+        }
+      }
+    },
+    "gate_results": {
+      "type": "object",
+      "description": "Quality gate results",
+      "properties": {
+        "U1": {"type": ["boolean", "null"], "description": "≥3 sources, ≥1 academic"},
+        "U2": {"type": ["boolean", "null"], "description": "Disclosure before recommendation"},
+        "U3": {"type": ["boolean", "null"], "description": "Evidence hierarchy per source"},
+        "U4": {"type": ["boolean", "null"], "description": "Language matches preference"},
+        "U5": {"type": ["boolean", "null"], "description": "Output uses template"},
+        "U6": {"type": ["boolean", "null"], "description": "Every claim traceable"},
+        "G1": {"type": ["boolean", "null"], "description": "Layers ≥3, chokepoints ≥1"},
+        "G2": {"type": ["boolean", "null"], "description": "Trap logic specified"},
+        "G3": {"type": ["boolean", "null"], "description": "Cost/coverage balanced"},
+        "G4": {"type": ["boolean", "null"], "description": "Counter-play evaluated"}
+      }
+    },
+    "retries": {
+      "type": "object",
+      "description": "Retry counts per gate",
+      "additionalProperties": {"type": "integer"}
+    },
+    "performance": {
+      "type": "object",
+      "description": "Performance metrics",
+      "properties": {
+        "start_time": {"type": "string", "format": "date-time"},
+        "end_time": {"type": "string", "format": "date-time"},
+        "total_duration_ms": {"type": "integer"},
+        "total_tokens": {"type": "integer"},
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "tokens": {
+                "type": "object",
+                "properties": {
+                  "input": {"type": "integer"},
+                  "output": {"type": "integer"},
+                  "cached": {"type": "integer"},
+                  "total": {"type": "integer"}
+                }
+              },
+              "duration_ms": {"type": "integer"},
+              "status": {"type": "string"}
+            }
+          }
+        },
+        "token_budget": {
+          "type": "object",
+          "properties": {
+            "total": {"type": "integer"},
+            "allocated": {"type": "object"},
+            "consumed": {"type": "object"},
+            "remaining": {"type": "object"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://972026.skill-library/base-building-trap-defense-design/gates.json",
+  "title": "Quality Gates Schema",
+  "description": "Schema for quality gate definitions and results",
+  "type": "object",
+  "properties": {
+    "gate_id": {
+      "type": "string",
+      "pattern": "^[UG]\\d+$",
+      "description": "Gate identifier (U1-U6 for universal, G1-G4 for domain)"
+    },
+    "gate_name": {
+      "type": "string",
+      "description": "Human-readable gate name"
+    },
+    "gate_type": {
+      "type": "string",
+      "enum": ["universal", "domain"],
+      "description": "Gate type (universal or domain-specific)"
+    },
+    "check": {
+      "type": "string",
+      "description": "Description of what the gate checks"
+    },
+    "auto_fix": {
+      "type": "string",
+      "description": "Description of auto-fix action"
+    },
+    "enforcement_logic": {
+      "type": "string",
+      "description": "Logic for enforcing the gate"
+    },
+    "result": {
+      "type": ["boolean", "null"],
+      "description": "Gate result (true=pass, false=fail, null=not evaluated)"
+    },
+    "retry_attempt": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Current retry attempt number"
+    },
+    "max_retries": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Maximum retry attempts allowed"
+    },
+    "failure_reason": {
+      "type": "string",
+      "description": "Reason for gate failure (if failed)"
+    },
+    "auto_fix_triggered": {
+      "type": "boolean",
+      "description": "Whether auto-fix was triggered"
+    },
+    "auto_fix_result": {
+      "type": ["boolean", "null"],
+      "description": "Auto-fix result (true=success, false=failure, null=not triggered)"
+    }
+  },
+  "required": ["gate_id", "gate_name", "gate_type", "check", "auto_fix", "enforcement_logic"]
+}

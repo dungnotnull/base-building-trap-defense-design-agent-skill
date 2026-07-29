@@ -1,0 +1,74 @@
+{
+  "version": "2.1.0",
+  "environment": "production",
+  "context_window": {
+    "max_tokens": 128000,
+    "pruning_strategy": "tier_then_recency",
+    "compression_enabled": true,
+    "compression_threshold": 0.75,
+    "budgets": {
+      "requirements": 2000,
+      "evidence": 12000,
+      "analysis": 35000,
+      "knowledge": 8000,
+      "advice": 3000
+    }
+  },
+  "knowledge_sources": {
+    "arxiv": {
+      "enabled": true,
+      "categories": ["cs.AI", "cs.HC"],
+      "max_results": 100,
+      "rss_feeds": [
+        "http://export.arxiv.org/rss/cs.AI",
+        "http://export.arxiv.org/rss/cs.HC"
+      ]
+    },
+    "semantic_scholar": {
+      "enabled": true,
+      "api_key": "${SEMANTIC_SCHOLAR_API_KEY}",
+      "timeout_ms": 30000,
+      "max_results": 100
+    },
+    "game_sources": {
+      "rust_wiki": "https://rust.fandom.com/wiki/Rust_Wiki",
+      "rust_labs": "https://rustlabs.com",
+      "7dtd_wiki": "https://7daystodie.fandom.com/wiki/7_Days_to_Die_Wiki",
+      "facepunch_patch_notes": "https://rust.facepunch.com/"
+    }
+  },
+  "quality_gates": {
+    "enforcement": "strict",
+    "max_retries": 2,
+    "auto_fix_enabled": true,
+    "universal_gates": ["U1", "U2", "U3", "U4", "U5", "U6"],
+    "domain_gates": ["G1", "G2", "G3", "G4"]
+  },
+  "logging": {
+    "level": "INFO",
+    "structured": true,
+    "rotation": "daily",
+    "retention_days": {
+      "INFO": 30,
+      "WARN": 60,
+      "ERROR": 90
+    },
+    "outputs": [
+      {
+        "type": "file",
+        "path": "logs/harness.log",
+        "format": "json"
+      }
+    ]
+  },
+  "performance": {
+    "token_tracking": true,
+    "operation_timeout_ms": 120000,
+    "circuit_breaker": {
+      "enabled": true,
+      "failure_threshold": 3,
+      "reset_timeout_ms": 120000,
+      "half_open_max_calls": 2
+    }
+  }
+}

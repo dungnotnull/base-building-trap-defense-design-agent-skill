@@ -1,0 +1,5 @@
+# Runtime dependencies for the knowledge crawl pipeline (tools/knowledge_updater.py).
+# The skill markdown (skills/*.md) needs no Python dependencies.
+requests>=2.31.0
+feedparser>=6.0.10
+python-dateutil>=2.8.2

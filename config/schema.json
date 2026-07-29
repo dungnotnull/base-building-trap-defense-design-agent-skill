@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://972026.skill-library/config/base-building-trap-defense-design-schema.json",
+  "title": "Base Building Trap Defense Design Configuration Schema",
+  "description": "Type-safe configuration schema for the base-building-trap-defense-design skill v2.1.0",
+  "type": "object",
+  "required": ["version", "environment", "context_window", "knowledge_sources", "quality_gates", "logging"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Configuration schema version (must match skill version)"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["development", "staging", "production"],
+      "description": "Runtime environment"
+    },
+    "context_window": {
+      "type": "object",
+      "properties": {
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 200000,
+          "default": 128000,
+          "description": "Maximum context window size in tokens"
+        },
+        "pruning_strategy": {
+          "type": "string",
+          "enum": ["tier_then_recency", "recency_only", "manual"],
+          "default": "tier_then_recency",
+          "description": "Strategy for pruning context when approaching limit"
+        },
+        "compression_enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable context compression for long content blocks"
+        },
+        "compression_threshold": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "default": 0.8,
+          "description": "Trigger compression when context is X% full"
+        },
+        "budgets": {
+          "type": "object",
+          "properties": {
+            "requirements": {"type": "integer", "default": 2000},
+            "evidence": {"type": "integer", "default": 15000},
+            "analysis": {"type": "integer", "default": 40000},
+            "knowledge": {"type": "integer", "default": 8000},
+            "advice": {"type": "integer", "default": 3000}
+          }
+        }
+      }
+    },
+    "knowledge_sources": {
+      "type": "object",
+      "properties": {
+        "arxiv": {
+          "type": "object",
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "categories": {
+              "type": "array",
+              "items": {"type": "string"},
+              "default": ["cs.AI", "cs.HC"]
+            },
+            "max_results": {"type": "integer", "minimum": 1, "maximum": 500},
+            "rss_feeds": {
+              "type": "array",
+              "items": {"type": "string", "format": "uri"}
+            }
+          }
+        },
+        "semantic_scholar": {
+          "type": "object",
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "api_key": {"type": "string"},
+            "timeout_ms": {"type": "integer", "minimum": 1000, "maximum": 120000},
+            "max_results": {"type": "integer", "minimum": 1, "maximum": 200}
+          }
+        },
+        "game_sources": {
+          "type": "object",
+          "properties": {
+            "rust_wiki": {"type": "string", "format": "uri"},
+            "rust_labs": {"type": "string", "format": "uri"},
+            "7dtd_wiki": {"type": "string", "format": "uri"},
+            "facepunch_patch_notes": {"type": "string", "format": "uri"}
+          }
+        }
+      }
+    },
+    "quality_gates": {
+      "type": "object",
+      "properties": {
+        "enforcement": {
+          "type": "string",
+          "enum": ["strict", "moderate", "lenient"],
+          "default": "strict"
+        },
+        "max_retries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5,
+          "default": 2
+        },
+        "auto_fix_enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "universal_gates": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["U1", "U2", "U3", "U4", "U5", "U6"]}
+        },
+        "domain_gates": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["G1", "G2", "G3", "G4"]}
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARN", "ERROR"],
+          "default": "INFO"
+        },
+        "structured": {
+          "type": "boolean",
+          "default": true
+        },
+        "rotation": {
+          "type": "string",
+          "enum": ["hourly", "daily", "weekly"],
+          "default": "daily"
+        },
+        "retention_days": {
+          "type": "object",
+          "properties": {
+            "INFO": {"type": "integer", "default": 30},
+            "WARN": {"type": "integer", "default": 60},
+            "ERROR": {"type": "integer", "default": 90}
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {"enum": ["file", "console", "external"]},
+              "path": {"type": "string"},
+              "format": {"enum": ["json", "text"]}
+            }
+          }
+        }
+      }
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "token_tracking": {
+          "type": "boolean",
+          "default": true
+        },
+        "operation_timeout_ms": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 600000,
+          "default": 120000
+        },
+        "circuit_breaker": {
+          "type": "object",
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "failure_threshold": {"type": "integer", "minimum": 1, "maximum": 100},
+            "reset_timeout_ms": {"type": "integer", "minimum": 1000},
+            "half_open_max_calls": {"type": "integer", "minimum": 1}
+          }
+        }
+      }
+    }
+  }
+}
